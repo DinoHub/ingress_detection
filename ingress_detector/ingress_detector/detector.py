@@ -28,7 +28,7 @@ class IngressDetector(Node):
         # self.model = model
         # Subscribes to incoming video. The queue size is 10 messages.
         self.subscription = self.create_subscription(\
-            Image, 'video_frames', self.listener_callback, 10)
+            Image, '/camera/color/image_raw', self.listener_callback, 10)
         self.subscription # prevent unused variable warning
         # Publishes detection bounding boxes from model
         self.publisher_ = self.create_publisher(\
@@ -45,7 +45,8 @@ class IngressDetector(Node):
     
         # Convert ROS Image message to OpenCV image
         current_frame = self.bridge.imgmsg_to_cv2(data)
-        
+        current_frame = cv2.cvtColor(current_frame, cv2.COLOR_BGR2RGB)
+
         # TODO: run prediction with detection model 
         # detections = self.model.predict(current_frame)
         # Create a new msg, fill it, and publish.
